@@ -1,11 +1,13 @@
-/** @type {import('next').NextConfig} */
-const isGithubPages = process.env.DEPLOY_ENV === 'GH_PAGES';
-const repo = 'MovieTracker'; 
+import type { NextConfig } from 'next';
 
-const nextConfig = {
-  output: 'export', // Required for static export
+const repo = 'MovieTracker'; // replace with your GitHub repo name
+const isGithubPages = process.env.DEPLOY_ENV === 'GH_PAGES';
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  output: 'export',
   basePath: isGithubPages ? `/${repo}` : '',
   assetPrefix: isGithubPages ? `/${repo}/` : '',
 };
 
-module.exports = nextConfig;
+export default nextConfig;
