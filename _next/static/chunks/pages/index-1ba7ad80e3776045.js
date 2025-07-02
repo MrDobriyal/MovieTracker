@@ -1,0 +1,1 @@
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[332],{6760:(_,e,u)=>{(window.__NEXT_P=window.__NEXT_P||[]).push(["/",function(){return u(9306)}])},9306:(_,e,u)=>{"use strict";u.r(e),u.d(e,{default:()=>n}),u(4232);var s=u(9099);let n=()=>(0,s.useRouter)().push("/movies")}},_=>{var e=e=>_(_.s=e);_.O(0,[636,593,792],()=>e(6760)),_N_E=_.O()}]);
