@@ -6,6 +6,7 @@ const isGithubPages = process.env.DEPLOY_ENV === 'GH_PAGES';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: 'export',
+  trailingSlash: true,
   basePath: isGithubPages ? `/${repo}` : '',
   assetPrefix: isGithubPages ? `/${repo}/` : '',
 };
