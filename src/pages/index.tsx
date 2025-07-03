@@ -1,10 +1,14 @@
-
-import React from 'react';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const Index = () => {
   const router = useRouter();
-  return router.push('/movies');
+
+  useEffect(() => {
+    router.push('/movies');
+  }, [router]);
+
+  return null; 
 };
 
 export default Index;
