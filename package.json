@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "cross-env DEPLOY_ENV=GH_PAGES npm run build && gh-pages -d out"
+    "deploy": "cross-env DEPLOY_ENV=GH_PAGES next build &&  gh-pages -d out"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
