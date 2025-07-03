@@ -22,7 +22,7 @@ const Navigation: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           {/* Left Side */}
           <div className="flex items-center space-x-4">
-            <Link href="/" className="text-2xl font-bold text-red-600">
+            <Link href="/movies" className="text-2xl font-bold text-red-600">
               MovieTracker
             </Link>
             {/* Desktop Links */}
@@ -30,7 +30,7 @@ const Navigation: React.FC = () => {
               <Link
                 href="/movies"
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive('/') ? 'bg-red-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                  isActive('/movies') ? 'bg-red-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'
                 }`}
               >
                 Browse Movies
@@ -40,7 +40,7 @@ const Navigation: React.FC = () => {
                   <Link
                     href="/selectMovies"
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive('/select') ? 'bg-red-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                      isActive('/selectMovies') ? 'bg-red-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'
                     }`}
                   >
                     Select Movies
