@@ -55,6 +55,14 @@ const Navigation: React.FC = () => {
                   </Link>
                 </>
               )}
+               <Link
+                      href="/donate"
+                      className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                        isActive('/donate') ? 'bg-red-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                      }`}
+                    >
+                      Help Building Site
+                    </Link>
             </div>
           </div>
 
@@ -123,6 +131,14 @@ const Navigation: React.FC = () => {
                 </Link>
               </>
             )}
+             <Link
+                    href="/donate"
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActive('/donate') ? 'bg-red-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                    }`}
+                  >
+                    Help Building Site
+                  </Link>
             {isAuthenticated ? (
               <Button
                 onClick={logout}

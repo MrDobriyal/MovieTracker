@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
+import Link from 'next/link';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -73,7 +74,7 @@ const Login: React.FC = () => {
             </Button>
           </form>
           <p className="text-xs text-gray-500 mt-4 text-center">
-            Don&apos;t have an account? <a className="text-red-400 hover:underline" href="/signup">Sign Up</a>
+            Don&apos;t have an account? <Link  className="text-red-400 hover:underline" href="/signup">Sign Up</Link>
           </p>
         </CardContent>
       </Card>
