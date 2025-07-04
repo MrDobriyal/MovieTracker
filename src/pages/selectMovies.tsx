@@ -17,6 +17,7 @@ const SelectMovies: React.FC = () => {
   const [allMovies ,setAllMovies] =useState<any>([]);
   const [totalPages,setTotalPages] =useState(1);
   const [currentPage,setCurrentPage]=useState(1);
+  const [movieType,setMovieType] =useState<'en'|'hi'>('en');
   const router=useRouter();
   const { user} = useAuth();
 
@@ -24,22 +25,23 @@ const SelectMovies: React.FC = () => {
     return router.push('/login');
   }
   
- async function getAllMovies(type:'previous'|'next'|'all', params: {
+ async function getAllMovies(params: {
     adult?: boolean;
     video?: boolean;
     language?: string;
     sort_by?: string;
     page?: number;
+    with_original_language?:string;
   } = {}){
-  let data;
-  if(type =='all'){    
-  data = await moviesServices.fetchMovies(params);
-      
-    }
-    else if(type=="next" ||type=="previous"){
-      const targetPage = params.page ?? currentPage;
-      data = await moviesServices.fetchMovies({page:targetPage});
-    }
+  
+ const  data = await moviesServices.fetchMovies(params);
+      if(params.with_original_language==="hi"){
+          setMovieType("hi");
+        }else{
+            setMovieType("en");
+        }
+ await moviesServices.fetchMovies(params);
+    
 
       setTotalPages(data.total_pages);
       setCurrentPage(data.page);
@@ -47,7 +49,7 @@ const SelectMovies: React.FC = () => {
   }
   useEffect(()=>{
    
-   getAllMovies('all');
+   getAllMovies();
   },[]);
 
 
@@ -69,11 +71,11 @@ const SelectMovies: React.FC = () => {
 
   const filteredAndSortedMovies =async()=> {
    
-      if (sortBy === 'title') return await getAllMovies('all',{sort_by:"title.asc"})
-      if (sortBy === 'year') return await getAllMovies('all',{sort_by:"primary_release_date.asc"});
-      if (sortBy === 'rating') return await getAllMovies('all',{sort_by:"popularity.desc"});
-      if(sortBy ==='popularity') return await getAllMovies('all',{});
-      if(sortBy ==='adult') return await getAllMovies('all',{adult:true});
+      if (sortBy === 'title') return await getAllMovies({sort_by:"title.asc",with_original_language:movieType =="hi"?"hi":"en"})
+      if (sortBy === 'year') return await getAllMovies({sort_by:"primary_release_date.asc",with_original_language:movieType =="hi"?"hi":"en"});
+      if (sortBy === 'rating') return await getAllMovies({sort_by:"popularity.desc",with_original_language:movieType =="hi"?"hi":"en"});
+      if(sortBy ==='popularity') return await getAllMovies({with_original_language:movieType =="hi"?"hi":"en"});
+      if(sortBy ==='adult') return await getAllMovies({adult:true,with_original_language:movieType =="hi"?"hi":"en"});
       return 0;
 }
 filteredAndSortedMovies();
@@ -97,7 +99,14 @@ filteredAndSortedMovies();
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-red-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-4xl font-bold text-white mb-6">Select Movies to Watch</h1>
-
+       <div className='flex gap-2 mb-4 justify-center sm:justify-start'>
+                <Button type='button' className='bg-red-600 hover:bg-red-400' onClick={()=> {
+      
+                  getAllMovies({with_original_language:"en"})}}>Hollywood</Button>
+                <Button type='button' className='bg-red-600 hover:bg-red-400' onClick={()=> {
+                 
+                  getAllMovies({with_original_language:"hi"})}}>Bollywood</Button>
+                </div>
         {/* Toolbar */}
         <div className="bg-gray-800 rounded-lg p-4 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex flex-col md:flex-row md:items-center gap-4 text-gray-300">
@@ -192,10 +201,10 @@ filteredAndSortedMovies();
       {totalPages > 1 && (
                 <div className="flex justify-center items-center space-x-2">
                   <Button
-                    onClick={()=>{ const previousPage = currentPage - 1;
-                          getAllMovies('previous', {page:previousPage}); 
-                          setCurrentPage(previousPage);     
-                    }}
+                   onClick={()=>{ const previousPage = currentPage - 1;
+                                 getAllMovies({page:previousPage,with_original_language:movieType =="hi"?"hi":"en"}); 
+                                 setCurrentPage(previousPage);     
+                           }}
                     disabled={currentPage === 1}
                     variant="outline"
                     className="text-gray-300 border-gray-600 hover:bg-gray-800"
@@ -210,10 +219,10 @@ filteredAndSortedMovies();
                   </div>
       
                   <Button
-                    onClick={()=>{ const nextPage = currentPage + 1;
-                          getAllMovies('next', {page:nextPage}); 
-                          setCurrentPage(nextPage);     
-                    }}
+                  onClick={()=>{ const nextPage = currentPage + 1;
+                                 getAllMovies({page:nextPage, with_original_language:movieType =="hi"?"hi":"en"}); 
+                                 setCurrentPage(nextPage);     
+                           }}
                     disabled={currentPage === totalPages}
                     variant="outline"
                     className="text-gray-300 border-gray-600 hover:bg-gray-800"

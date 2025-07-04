@@ -111,6 +111,7 @@ const Navigation: React.FC = () => {
           <div className="md:hidden mt-2 space-y-2 pb-4">
             <Link
               href="/movies"
+                onClick={()=>setIsMobileMenuOpen(false)}
               className="block px-3 py-2 text-sm rounded-md text-gray-300 hover:bg-gray-700"
             >
               Browse Movies
@@ -119,12 +120,14 @@ const Navigation: React.FC = () => {
               <>
                 <Link
                   href="/selectMovies"
+                    onClick={()=>setIsMobileMenuOpen(false)}
                   className="block px-3 py-2 text-sm rounded-md text-gray-300 hover:bg-gray-700"
                 >
                   Select Movies
                 </Link>
                 <Link
                   href="/watched"
+                    onClick={()=>setIsMobileMenuOpen(false)}
                   className="block px-3 py-2 text-sm rounded-md text-gray-300 hover:bg-gray-700"
                 >
                   My Watched
@@ -133,6 +136,7 @@ const Navigation: React.FC = () => {
             )}
              <Link
                     href="/donate"
+                    onClick={()=>setIsMobileMenuOpen(false)}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                       isActive('/donate') ? 'bg-red-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'
                     }`}

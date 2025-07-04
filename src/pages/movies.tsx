@@ -14,27 +14,25 @@ const Movies: React.FC = () => {
   const [totalMovies,setTotalMovies]=useState(1);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
-
+  const [movieType,setMovieType] =useState<'en'|'hi'>('en');
   
-   const fetchMovies = async (type:'previous'|'next'|'all',params: {
+   const fetchMovies = async (params: {
     adult?: boolean;
     video?: boolean;
     language?: string;
     sort_by?: string;
     page?: number;
+    with_original_language?:string
   } = {}) => {
       try {
+        if(params.with_original_language==="hi"){
+          setMovieType("hi");
+        }else{
+            setMovieType("en");
+        }
+
         setLoading(true);
-        let response;
-        if(type =='all'){    
-          response = await moviesServices.fetchMovies({});
-              
-            }
-            else if(type=="next" ||type=="previous"){
-              const targetPage = params.page ?? currentPage;
-              response = await moviesServices.fetchMovies({page:targetPage});
-            }
-        
+        const response = await moviesServices.fetchMovies(params);
         setApiMovies(response.results || []);
         setCurrentPage(response.page);
         setTotalPages(response.total_pages);
@@ -50,7 +48,7 @@ const Movies: React.FC = () => {
   useEffect(() => {
    
 
-    fetchMovies('all');
+    fetchMovies();
   }, [setCurrentPage]);
 
 
@@ -72,7 +70,14 @@ const Movies: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-red-900">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-white mb-6">Browse Movies</h1>
+          <div className='flex gap-2 mb-4 justify-center sm:justify-start'>
+          <Button type='button' className='bg-red-600 hover:bg-red-400' onClick={()=> {
 
+            fetchMovies({with_original_language:"en"})}}>Hollywood</Button>
+          <Button type='button' className='bg-red-600 hover:bg-red-400' onClick={()=> {
+           
+            fetchMovies({with_original_language:"hi"})}}>Bollywood</Button>
+          </div>
         {/* Search */}
         <div className="relative max-w-md mb-6">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -101,7 +106,7 @@ const Movies: React.FC = () => {
         {/* Movie Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
           {apiMovies.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
+            <MovieCard key={movie.id} movie={movie} descriptionOpen={true} />
           ))}
         </div>
 
@@ -117,7 +122,7 @@ const Movies: React.FC = () => {
                        <div className="flex justify-center items-center space-x-2">
                          <Button
                            onClick={()=>{ const previousPage = currentPage - 1;
-                                 fetchMovies('previous', {page:previousPage}); 
+                                 fetchMovies({page:previousPage,with_original_language:movieType =="hi"?"hi":"en"}); 
                                  setCurrentPage(previousPage);     
                            }}
                            disabled={currentPage === 1}
@@ -135,7 +140,7 @@ const Movies: React.FC = () => {
              
                          <Button
                            onClick={()=>{ const nextPage = currentPage + 1;
-                                 fetchMovies('next', {page:nextPage}); 
+                                 fetchMovies({page:nextPage, with_original_language:movieType =="hi"?"hi":"en"}); 
                                  setCurrentPage(nextPage);     
                            }}
                            disabled={currentPage === totalPages}

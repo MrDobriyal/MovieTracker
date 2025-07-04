@@ -1,27 +1,40 @@
-
 import React from 'react';
+import { useRouter } from 'next/router'; // or from 'next/navigation' if using app directory
 import { Movie } from '@/data/movies';
 import { Card, CardContent } from '@/components/ui/card';
 import { genreTitle } from '@/utils/helper';
+
 interface MovieCardProps {
   movie: Movie;
   onClick?: () => void;
   isSelected?: boolean;
   showCheckbox?: boolean;
+  descriptionOpen?:boolean;
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({ 
   movie, 
   onClick, 
   isSelected = false, 
-  showCheckbox = false 
+  showCheckbox = false ,
+  descriptionOpen=false
 }) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (descriptionOpen) {
+      router.push(`/movie/${movie.id}`);
+    } else if (onClick) {
+      onClick();
+    }
+  };
+
   return (
     <Card 
       className={`bg-gray-800 border-gray-700 hover:border-red-500 transition-all duration-300 cursor-pointer transform hover:scale-105 ${
         isSelected ? 'ring-2 ring-red-500 border-red-500' : ''
       }`}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <CardContent className="p-0 relative">
         {showCheckbox && (
