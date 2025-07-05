@@ -6,12 +6,15 @@ const MovieDetail = () => {
   const router = useRouter();
   const { id } = router.query;
   const [movie, setMovie] = useState<any>(null);
+  const [platforms, setPlatforms] = useState<any>([]);
 
  useEffect(() => {
     if (id) {
         async function fetchData(){
       const data =await moviesServices.fetchMovieById(Number(id));
+      const plateforms = await moviesServices.fetchMovieWatchProviders(Number(id));
       setMovie(data);
+      setPlatforms(plateforms);
         }
         fetchData();
     }
@@ -67,6 +70,23 @@ const MovieDetail = () => {
           <p><strong>Status:</strong> {movie.status}</p>
           <p><strong>Rating:</strong> ⭐ {movie.vote_average} ({movie.vote_count} votes)</p>
 
+{ platforms?.IN?.rent &&(
+  <div>
+    <h2 className="text-xl font-semibold mt-6 mb-2">Available On</h2>
+    <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+      {platforms?.IN?.rent.map((p:any) => (
+        <div key={p.provider_id} className="flex-shrink-0 text-center">
+          <img
+            src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
+            alt={p.provider_name}
+            className="w-16 h-16 object-contain mx-auto rounded"
+          />
+          <p className="text-sm text-white mt-1">{p.provider_name}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
           {/* Links */}
           <div className="mt-2 space-x-4">
             {movie.homepage && (
@@ -85,19 +105,7 @@ const MovieDetail = () => {
             )}
           </div>
 
-          {/* Collection */}
-          {movie.belongs_to_collection && (
-            <div className="mt-4">
-              <p><strong>Part of:</strong> {movie.belongs_to_collection.name}</p>
-              {movie.belongs_to_collection.poster_path && (
-                <img
-                  src={`https://image.tmdb.org/t/p/w200${movie.belongs_to_collection.poster_path}`}
-                  alt="Collection Poster"
-                  className="mt-2 w-32 rounded"
-                />
-              )}
-            </div>
-          )}
+         
         </div>
       </div>
 

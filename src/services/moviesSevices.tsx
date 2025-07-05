@@ -34,6 +34,11 @@ const genreService = async () =>{
     return res.data;
 }
 
+ const fetchMovieWatchProviders = async (id: number) => {
+  const res = await axiosTmdbApiInstance.get(`/movie/${id}/watch/providers`);
+  return res.data.results;
+};
+
 
 type MovieTSearch ={
   query:string,
@@ -63,5 +68,6 @@ export const moviesServices={
     fetchMovies,
     genreService,
     fetchMovieById,
-    serchMovie
+    serchMovie,
+    fetchMovieWatchProviders
 }
