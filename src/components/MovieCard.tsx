@@ -59,13 +59,17 @@ const MovieCard: React.FC<MovieCardProps> = ({
             className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
           />
         </div>
+       
         <div className="p-4">
           <h3 className="font-semibold text-white mb-1 truncate">{movie.title}</h3>
+           
           <div className="flex justify-between items-center text-sm text-gray-400">
             <span>{movie.release_date}</span>
             <span>⭐ {movie.vote_average}</span>
           </div>
           <p className="text-xs text-gray-500 mt-1">{genreTitle(movie.genre_ids)}</p>
+        
+
         </div>
       </CardContent>
     </Card>

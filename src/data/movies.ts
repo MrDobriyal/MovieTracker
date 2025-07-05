@@ -12,6 +12,10 @@ export interface Movie {
 
 export const genres:{id:number,name:string}[]= [
         {
+            "id":1,
+            "name":"All"
+        },
+        {
             "id": 28,
             "name": "Action"
         },

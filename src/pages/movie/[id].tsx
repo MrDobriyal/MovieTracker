@@ -39,12 +39,22 @@ const MovieDetail = () => {
         <h1 className="text-4xl font-bold">{movie.title}</h1>
         {movie.tagline && <p className="text-lg italic text-gray-400">{movie.tagline}</p>}
       </div>
+      <div className='flex overflow-auto gap-3'>
+      {movie.credits.cast.map((actor:any) => (
+    <div key={actor.id} className="flex-shrink-0 w-24 text-center">
+      <img
+        src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
+        alt={actor.name}
+        className="w-24 h-24 object-cover rounded-full mx-auto border border-gray-700"
+      />
+      <p className="mt-2 text-sm text-white truncate">{actor.name}</p>
+      <p className="text-xs text-gray-400 truncate">as {actor.character}</p>
+    </div>
+  ))}
+  </div>
 
-      {/* Poster + Info */}
+      {/* Info */}
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Poster */}
-        {/* s */}
-
         {/* Info */}
         <div className="space-y-2">
           <p className="text-gray-300">{movie.overview}</p>
@@ -129,6 +139,8 @@ const MovieDetail = () => {
           ></iframe>
         </div>
       )}
+      <div className="overflow-x-auto flex gap-4 px-2 pb-2 scrollbar-hide">
+</div>
     </div>
   );
 };

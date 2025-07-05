@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
 import { moviesServices } from '@/services/moviesSevices';
-
+import { genres } from '@/data/movies';
 
 const Movies: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,14 +15,17 @@ const Movies: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
   const [movieType,setMovieType] =useState<'en'|'hi'>('en');
+  const [selectedGenreId, setSelectedGenreId] = useState<number>(1);
   
    const fetchMovies = async (params: {
+    query?:string,
     adult?: boolean;
     video?: boolean;
     language?: string;
     sort_by?: string;
     page?: number;
     with_original_language?:string
+    with_genres?:number;
   } = {}) => {
       try {
         if(params.with_original_language==="hi"){
@@ -30,9 +33,13 @@ const Movies: React.FC = () => {
         }else{
             setMovieType("en");
         }
-
         setLoading(true);
-        const response = await moviesServices.fetchMovies(params);
+        let response;
+        if(params.query && params.query!==""){
+          response = await moviesServices.serchMovie({...params,query:searchTerm});
+        }else{
+           response = await moviesServices.fetchMovies(params);
+        }
         setApiMovies(response.results || []);
         setCurrentPage(response.page);
         setTotalPages(response.total_pages);
@@ -50,15 +57,6 @@ const Movies: React.FC = () => {
 
     fetchMovies();
   }, [setCurrentPage]);
-
-
-  // ✅ Filtered by search
-  const filteredMovies = useMemo(() => {
-    return apiMovies.filter((movie) =>
-      movie.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [searchTerm, apiMovies]);
-
   
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,20 +65,43 @@ const Movies: React.FC = () => {
   };
 
   return (
+    <div className='flex'>
+      {!searchTerm.trim() &&
+      <div className="w-48 h-full  bg-gray-900 border-r border-gray-700  space-y-2 sticky top-[16px]">
+        {genres.map((genre) => (
+          <button
+            key={genre.id}
+             onClick={() => {setSelectedGenreId(genre.id)
+              fetchMovies({query:searchTerm,with_original_language:movieType =="hi"?"hi":"en",with_genres:genre.id})}
+             }
+            className={`block w-full text-left px-3 py-2 z-50 cursor-pointer rounded text-sm font-medium text-white transition-colors ${
+              selectedGenreId === genre.id
+                ? 'bg-red-600 text-black'
+                : 'text-gray-300 hover:bg-gray-700'
+            }`}
+          >
+            {genre.name}
+          </button>
+        ))}
+      </div>
+}
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-red-900">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-white mb-6">Browse Movies</h1>
-          <div className='flex gap-2 mb-4 justify-center sm:justify-start'>
-          <Button type='button' className='bg-red-600 hover:bg-red-400' onClick={()=> {
-
-            fetchMovies({with_original_language:"en"})}}>Hollywood</Button>
-          <Button type='button' className='bg-red-600 hover:bg-red-400' onClick={()=> {
-           
-            fetchMovies({with_original_language:"hi"})}}>Bollywood</Button>
+      <div className="max-w-7xl mx-auto px-4 py-8"> 
+        <h1 className="text-4xl font-bold text-white mb-6 ">Browse Movies</h1>
+          <div className='flex gap-2 mb-4'>
+          <Button type='button' className='bg-red-600 hover:bg-red-400 cursor-pointer'
+          disabled={!!searchTerm.trim()} 
+          onClick={()=> {
+            fetchMovies({query:searchTerm,with_original_language:"en",with_genres:selectedGenreId})}}>Hollywood</Button>
+          <Button type='button' className='bg-red-600 hover:bg-red-400 cursor-pointer' 
+          disabled={!!searchTerm.trim()} 
+          onClick={()=> {
+            fetchMovies({query:searchTerm, with_original_language:"hi",with_genres:selectedGenreId})}}>Bollywood</Button>
           </div>
         {/* Search */}
         <div className="relative max-w-md mb-6">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+         <div className='flex justify-center items-center gap-2'>
           <Input
             type="text"
             placeholder="Search movies..."
@@ -88,6 +109,11 @@ const Movies: React.FC = () => {
             onChange={handleSearchChange}
             className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400"
           />
+          <div className=' text-white bg-red-600 p-2 rounded-3xl hover:bg-red-300'>
+          <Search className=' w-4 h-4 ' onClick={()=>
+            { fetchMovies({query:searchTerm,with_original_language:"en",with_genres:selectedGenreId})}}/> 
+          </div>
+          </div>
         </div>
 
         {/* Status / Loading / Error */}
@@ -111,7 +137,7 @@ const Movies: React.FC = () => {
         </div>
 
         {/* No results */}
-        {!loading && filteredMovies.length === 0 && (
+        {!loading && apiMovies.length === 0 && (
           <div className="text-center py-12 text-gray-400">
             No movies found matching your search.
           </div>
@@ -122,7 +148,7 @@ const Movies: React.FC = () => {
                        <div className="flex justify-center items-center space-x-2">
                          <Button
                            onClick={()=>{ const previousPage = currentPage - 1;
-                                 fetchMovies({page:previousPage,with_original_language:movieType =="hi"?"hi":"en"}); 
+                                 fetchMovies({query:searchTerm,page:previousPage,with_original_language:movieType =="hi"?"hi":"en",with_genres:selectedGenreId}); 
                                  setCurrentPage(previousPage);     
                            }}
                            disabled={currentPage === 1}
@@ -140,7 +166,8 @@ const Movies: React.FC = () => {
              
                          <Button
                            onClick={()=>{ const nextPage = currentPage + 1;
-                                 fetchMovies({page:nextPage, with_original_language:movieType =="hi"?"hi":"en"}); 
+                                 fetchMovies({query:searchTerm,page:nextPage, with_original_language:movieType =="hi"?"hi":"en",with_genres:selectedGenreId}); 
+                                 
                                  setCurrentPage(nextPage);     
                            }}
                            disabled={currentPage === totalPages}
@@ -152,6 +179,7 @@ const Movies: React.FC = () => {
                        </div>
                      )}
       </div>
+    </div>
     </div>
   );
 };
